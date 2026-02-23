@@ -2,6 +2,8 @@
 
 一个私密、优雅的电子日记 Web 应用，支持富文本编辑、心情追踪、标签分类与写作统计。
 
+> 当前处于持续迭代中，功能还在完善。欢迎试用并通过 Issue 提出建议。
+
 ## 功能特性
 
 - 用户注册与 JWT 认证
@@ -288,15 +290,7 @@ UPLOAD_DIR=./uploads
 MAX_FILE_SIZE=5242880
 ```
 
-## 贡献指南
+## 开发状态
 
-1. Fork 本仓库
-2. 创建功能分支：`git checkout -b feature/your-feature`
-3. 提交变更：`git commit -m 'feat: add some feature'`
-4. 推送分支：`git push origin feature/your-feature`
-5. 提交 Pull Request
-
-## 许可证
-
-MIT License
+本项目处于持续迭代与完善中。部分功能可能仍在开发或调整，如有缺陷或功能建议，欢迎通过 Issue 反馈（或在仓库中查看当前进度）。
 

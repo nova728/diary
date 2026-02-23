@@ -113,41 +113,18 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="fade-in" style={{ maxWidth: "760px" }}>
+    <div className="fade-in editor-shell">
       {/* Top bar */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "28px" }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            padding: "7px 12px", borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--border)", background: "transparent",
-            color: "var(--text-secondary)", fontSize: "13px", cursor: "pointer",
-          }}
-        >
+      <div className="editor-topbar">
+        <button className="btn-secondary" onClick={() => navigate(-1)}>
           <ArrowLeftIcon size={14} /> 返回
         </button>
 
         <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            onClick={() => navigate(-1)}
-            style={{
-              padding: "8px 16px", borderRadius: "var(--radius-md)",
-              border: "1px solid var(--border)", background: "transparent",
-              color: "var(--text-secondary)", fontSize: "13px", cursor: "pointer",
-            }}
-          >取消</button>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            style={{
-              display: "flex", alignItems: "center", gap: "6px",
-              padding: "8px 20px", borderRadius: "var(--radius-md)", border: "none",
-              background: "var(--accent)", color: "white",
-              fontSize: "13px", fontWeight: "600", cursor: "pointer",
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
+          <button className="btn-secondary" onClick={() => navigate(-1)}>
+            取消
+          </button>
+          <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
             {loading && <LoaderIcon size={13} color="white" />}
             {loading ? "保存中…" : "保存"}
           </button>
@@ -168,7 +145,7 @@ export default function EditorPage() {
         onChange={(e) => set("title")(e.target.value)}
         placeholder="今天想记录什么…"
         style={{
-          width: "100%", fontSize: "26px", fontWeight: "700",
+          width: "100%", fontSize: "28px", fontWeight: "800",
           fontFamily: "var(--font-serif)", border: "none",
           background: "transparent", color: "var(--text-primary)",
           outline: "none", marginBottom: "16px",
@@ -193,20 +170,14 @@ export default function EditorPage() {
 
         <div style={{ flex: 1 }}>
           <label style={labelStyle}>今天的心情</label>
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {MOODS.map((m) => (
               <button
                 key={m.id}
                 type="button"
                 onClick={() => set("mood")(form.mood === m.id ? "" : m.id)}
-                style={{
-                  padding: "5px 12px", borderRadius: "99px", fontSize: "12px",
-                  border: `1.5px solid ${form.mood === m.id ? m.color : "var(--border)"}`,
-                  background: form.mood === m.id ? `${m.color}18` : "transparent",
-                  color: form.mood === m.id ? m.color : "var(--text-secondary)",
-                  cursor: "pointer", fontWeight: form.mood === m.id ? "600" : "400",
-                  transition: "all 0.15s",
-                }}
+                className={`pill-option ${form.mood === m.id ? "is-active" : ""}`}
+                style={{ borderColor: form.mood === m.id ? m.color : undefined, color: form.mood === m.id ? m.color : undefined, background: form.mood === m.id ? `${m.color}18` : undefined }}
               >{m.label}</button>
             ))}
           </div>
@@ -225,18 +196,13 @@ export default function EditorPage() {
       <div>
         <label style={labelStyle}>标签</label>
         <div style={{
-          display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center",
-          padding: "8px 12px", borderRadius: "var(--radius-md)",
+          display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center",
+          padding: "10px 12px", borderRadius: "var(--radius-md)",
           border: "1px solid var(--border)", background: "var(--surface)",
-          minHeight: "42px",
+          minHeight: "46px",
         }}>
           {form.tags.map((tag) => (
-            <span key={tag} style={{
-              display: "flex", alignItems: "center", gap: "4px",
-              padding: "3px 10px", borderRadius: "99px",
-              background: "var(--accent-subtle)", color: "var(--accent-text)",
-              fontSize: "12px", fontWeight: "500",
-            }}>
+            <span key={tag} className="tag-chip">
               #{tag}
               <span
                 onClick={() => removeTag(tag)}
