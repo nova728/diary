@@ -100,10 +100,10 @@ export default function StatsPage() {
         <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", padding: "20px", marginBottom: "20px" }}>
           <SectionTitle>{year}年 写作频率</SectionTitle>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={activity} barSize={4}>
+            <BarChart data={activity} barSize={4} margin={{ left: 16, right: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} width={24} />
+              <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} width={36} />
               <Tooltip
                 contentStyle={tooltipStyle}
                 labelStyle={{ color: "var(--text-secondary)" }}

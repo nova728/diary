@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEntryStore } from "../store/entryStore";
 import { useEntries } from "../hooks/useEntries";
@@ -41,6 +41,16 @@ export default function HomePage() {
     fetchEntries();
   }, [filters]);
 
+  const availableTags = useMemo(() => {
+    const set = new Map();
+    entries.forEach((e) => {
+      (e.tags || []).forEach((t) => {
+        if (!set.has(t.name)) set.set(t.name, t.id || t.name);
+      });
+    });
+    return [{ value: "", label: "全部标签" }, ...Array.from(set.keys()).map((name) => ({ value: name, label: `#${name}` }))];
+  }, [entries]);
+
   return (
     <div className="fade-in">
       {/* Header */}
@@ -71,7 +81,7 @@ export default function HomePage() {
       </div>
 
       {/* Search & Filter */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap", alignItems: "center" }}>
         <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
           <SearchIcon
             size={15}
@@ -100,6 +110,13 @@ export default function HomePage() {
           value={filters.mood}
           onChange={(v) => setFilters({ mood: v })}
           options={MOODS}
+        />
+
+        <Select
+          compact
+          value={filters.tag || ""}
+          onChange={(v) => setFilters({ tag: v })}
+          options={availableTags}
         />
 
         {/* Sort */}

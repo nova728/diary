@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { PinIcon, TagIcon } from "./icons";
+import { entriesApi } from "../api/entries";
+import { useEntryStore } from "../store/entryStore";
 
 const MOOD_MAP = {
   happy:    { label: "开心",   color: "#f59e0b", bg: "#fefce8" },
@@ -20,8 +22,20 @@ const toPlainText = (html) =>
 
 export default function EntryCard({ entry }) {
   const navigate = useNavigate();
+  const { updateEntry } = useEntryStore();
   const mood = entry.mood ? MOOD_MAP[entry.mood] : null;
   const preview = toPlainText(entry.content).slice(0, 120);
+
+  const togglePin = async (e) => {
+    e.stopPropagation();
+    try {
+      const data = await entriesApi.togglePin(entry.id);
+      updateEntry(data.entry);
+    } catch (err) {
+      // Fail silently; in production we could toast
+      console.error("toggle pin failed", err);
+    }
+  };
 
   return (
     <article
@@ -47,12 +61,19 @@ export default function EntryCard({ entry }) {
         e.currentTarget.style.transform = "none";
       }}
     >
-      {/* Pin indicator */}
-      {entry.isPinned && (
-        <div style={{ position: "absolute", top: "14px", right: "14px", color: "var(--accent)", opacity: 0.7 }}>
-          <PinIcon size={14} />
-        </div>
-      )}
+      {/* Pin indicator / action */}
+      <button
+        onClick={togglePin}
+        style={{
+          position: "absolute", top: "12px", right: "12px",
+          border: "none", background: "transparent", cursor: "pointer",
+          color: entry.isPinned ? "var(--accent)" : "var(--text-muted)",
+          opacity: entry.isPinned ? 0.9 : 0.7,
+        }}
+        title={entry.isPinned ? "取消置顶" : "置顶"}
+      >
+        <PinIcon size={16} />
+      </button>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "8px" }}>

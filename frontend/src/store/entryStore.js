@@ -16,9 +16,24 @@ export const useEntryStore = create((set) => ({
     set((s) => ({ entries: [entry, ...s.entries] })),
 
   updateEntry: (updated) =>
-    set((s) => ({
-      entries: s.entries.map((e) => (e.id === updated.id ? updated : e)),
-    })),
+    set((s) => {
+      const entries = s.entries
+        .map((e) => (e.id === updated.id ? updated : e))
+        .sort((a, b) => {
+          if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
+
+          const { sortBy = "date", order = "desc" } = s.filters;
+          const field = sortBy === "createdAt" ? "createdAt" : sortBy === "wordCount" ? "wordCount" : "date";
+          const dir = order === "asc" ? 1 : -1;
+
+          const av = a[field];
+          const bv = b[field];
+          if (av === bv) return 0;
+          return av > bv ? dir : -dir;
+        });
+
+      return { entries };
+    }),
 
   removeEntry: (id) =>
     set((s) => ({ entries: s.entries.filter((e) => e.id !== id) })),

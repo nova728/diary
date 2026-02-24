@@ -196,7 +196,11 @@ exports.togglePin = async (req, res, next) => {
     if (!entry) return res.status(404).json({ error: "Entry not found" });
 
     await entry.update({ isPinned: !entry.isPinned });
-    res.json({ entry });
+    const result = await Entry.findByPk(entry.id, {
+      include: [{ model: Tag, as: "tags", attributes: ["id", "name"], through: { attributes: [] } }],
+    });
+
+    res.json({ entry: result });
   } catch (err) {
     next(err);
   }
