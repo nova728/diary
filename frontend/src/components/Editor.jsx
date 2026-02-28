@@ -2,6 +2,9 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
+import Image from "@tiptap/extension-image";
+import { useCallback, useRef } from "react";
+import { uploadApi } from "../api/upload";
 
 // Toolbar button component
 function ToolBtn({ onClick, active, children, title }) {
@@ -30,6 +33,21 @@ function ToolBtn({ onClick, active, children, title }) {
 }
 
 export default function RichEditor({ content, onChange }) {
+  const fileInputRef = useRef(null);
+  const editorRef = useRef(null);
+
+  const handleImageUpload = useCallback(async (file) => {
+    if (!file || !file.type.startsWith("image/")) return;
+    try {
+      const data = await uploadApi.uploadImage(file);
+      if (data.url && editorRef.current) {
+        editorRef.current.chain().focus().setImage({ src: data.url }).run();
+      }
+    } catch (err) {
+      console.error("Image upload failed:", err);
+    }
+  }, []);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -39,14 +57,49 @@ export default function RichEditor({ content, onChange }) {
         placeholder: "把今天的故事写下来吧……",
       }),
       CharacterCount,
+      Image.configure({
+        inline: false,
+        allowBase64: false,
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML(), editor.getText());
     },
+    editorProps: {
+      handleDrop: (view, event) => {
+        const files = event.dataTransfer?.files;
+        if (files && files.length > 0) {
+          const imageFile = Array.from(files).find((f) => f.type.startsWith("image/"));
+          if (imageFile) {
+            event.preventDefault();
+            handleImageUpload(imageFile);
+            return true;
+          }
+        }
+        return false;
+      },
+      handlePaste: (view, event) => {
+        const items = event.clipboardData?.items;
+        if (items) {
+          for (const item of items) {
+            if (item.type.startsWith("image/")) {
+              event.preventDefault();
+              const file = item.getAsFile();
+              if (file) handleImageUpload(file);
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+    },
   });
 
   if (!editor) return null;
+
+  // Keep ref in sync for the upload callback
+  editorRef.current = editor;
 
   const charCount = editor.storage.characterCount?.characters?.() || 0;
 
@@ -109,6 +162,22 @@ export default function RichEditor({ content, onChange }) {
           active={editor.isActive("code")}
           title="代码"
         >{"`"}</ToolBtn>
+        <div style={{ width: "1px", height: "18px", background: "var(--border)", margin: "0 4px" }} />
+        <ToolBtn
+          onClick={() => fileInputRef.current?.click()}
+          title="插入图片"
+        >🖼</ToolBtn>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleImageUpload(file);
+            e.target.value = "";
+          }}
+        />
         <div style={{ flex: 1 }} />
         <span style={{ fontSize: "11px", color: "var(--text-muted)", padding: "0 4px" }}>
           {charCount} 字

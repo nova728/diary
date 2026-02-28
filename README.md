@@ -14,7 +14,14 @@
 - 导出 PDF / Markdown
 - 深色 / 浅色主题切换
 - 响应式设计，支持移动端
- - 响应式设计，支持移动端
+- **图片上传** — 拖拽/粘贴/按钮上传图片到编辑器
+- **GitHub 风格年度热力图** — 可视化全年写作活跃度
+- **成就徽章系统** — 连续写作、字数里程碑、特殊成就解锁
+- **写作目标** — 每日字数目标 / 每周篇数目标 + 进度追踪
+- **每日写作提醒** — 可配置提醒时间
+- **那年今日** — 自动展示历史同日日记
+- **随机回顾** — 随机推送一篇历史日记
+- **时间线视图** — 按年/月纵向展示所有日记
 
 ## 页面截图
 
@@ -217,6 +224,33 @@ sortBy=date&order=desc
 | GET | `/api/stats/activity` | 写作活跃度（按月/周） |
 | GET | `/api/stats/tags` | 标签使用频率 |
 
+### 图片上传
+
+| 方法 | 路由 | 描述 |
+|------|------|------|
+| POST | `/api/upload/image` | 上传单张图片 |
+| POST | `/api/upload/images` | 批量上传图片（最多 10 张） |
+| DELETE | `/api/upload/image/:filename` | 删除图片 |
+
+### 成就 & 写作目标
+
+| 方法 | 路由 | 描述 |
+|------|------|------|
+| GET | `/api/achievements` | 获取所有成就及解锁状态 |
+| POST | `/api/achievements/check` | 触发成就检查 |
+| GET | `/api/achievements/goal` | 获取写作目标设置 |
+| PUT | `/api/achievements/goal` | 更新写作目标 |
+| GET | `/api/achievements/goal/progress` | 获取目标进度 |
+
+### 回忆 & 时间线
+
+| 方法 | 路由 | 描述 |
+|------|------|------|
+| GET | `/api/memories/on-this-day` | 那年今日（历史同日日记） |
+| GET | `/api/memories/random` | 随机回顾一篇日记 |
+| GET | `/api/memories/timeline` | 时间线（按年月分组） |
+| GET | `/api/memories/heatmap` | 年度热力图数据 |
+
 ## 数据库 Schema
 
 ```sql
@@ -264,6 +298,28 @@ CREATE TABLE entry_tags (
 -- 全文搜索索引
 CREATE INDEX entries_search_idx ON entries USING gin(to_tsvector('simple', content_text || ' ' || title));
 CREATE INDEX entries_user_date_idx ON entries(user_id, date DESC);
+
+-- 成就表
+CREATE TABLE achievements (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID REFERENCES users(id) ON DELETE CASCADE,
+  key         VARCHAR(50) NOT NULL,
+  unlocked_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE (user_id, key)
+);
+
+-- 写作目标表
+CREATE TABLE writing_goals (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id           UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  daily_word_goal   INT DEFAULT 300,
+  weekly_entry_goal INT DEFAULT 3,
+  reminder_enabled  BOOLEAN DEFAULT FALSE,
+  reminder_time     VARCHAR(5) DEFAULT '21:00',
+  reminder_email    BOOLEAN DEFAULT FALSE,
+  created_at        TIMESTAMP DEFAULT NOW(),
+  updated_at        TIMESTAMP DEFAULT NOW()
+);
 ```
 
 ## 环境变量说明

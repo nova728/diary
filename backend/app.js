@@ -9,6 +9,9 @@ const path = require("path");
 const authRoutes = require("./routes/auth");
 const entryRoutes = require("./routes/entries");
 const statsRoutes = require("./routes/stats");
+const uploadRoutes = require("./routes/upload");
+const achievementRoutes = require("./routes/achievements");
+const memoryRoutes = require("./routes/memories");
 const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/logger");
 
@@ -55,6 +58,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/entries", entryRoutes);
 app.use("/api/stats", statsRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/memories", memoryRoutes);
 
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {

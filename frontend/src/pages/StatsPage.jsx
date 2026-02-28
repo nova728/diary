@@ -5,6 +5,7 @@ import {
 } from "recharts";
 import { statsApi } from "../api/stats";
 import { LoaderIcon } from "../components/icons";
+import Heatmap from "../components/Heatmap";
 
 const MOOD_COLORS = {
   happy: "#f59e0b", calm: "#6366f1", sad: "#60a5fa",
@@ -93,6 +94,11 @@ export default function StatsPage() {
         <StatCard label="总字数" value={(overview?.totalWords ?? 0).toLocaleString()} />
         <StatCard label="连续打卡" value={`${overview?.streak ?? 0}天`} sub="保持下去！" />
         <StatCard label="本月篇数" value={overview?.thisMonth ?? 0} />
+      </div>
+
+      {/* GitHub-style Heatmap */}
+      <div style={{ marginBottom: "20px" }}>
+        <Heatmap year={year} />
       </div>
 
       {/* Activity chart */}

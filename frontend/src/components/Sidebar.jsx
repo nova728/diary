@@ -4,12 +4,15 @@ import { useTheme } from "../hooks/useTheme";
 import {
   HomeIcon, CalendarIcon, BarChartIcon, TagIcon,
   MoonIcon, SunIcon, LogOutIcon, BookIcon,
+  TrophyIcon, TimelineIcon,
 } from "./icons";
 
 const NAV_ITEMS = [
   { to: "/", icon: HomeIcon, label: "首页", end: true },
   { to: "/calendar", icon: CalendarIcon, label: "日历" },
+  { to: "/timeline", icon: TimelineIcon, label: "时间线" },
   { to: "/stats", icon: BarChartIcon, label: "统计" },
+  { to: "/achievements", icon: TrophyIcon, label: "成就" },
 ];
 
 const s = {

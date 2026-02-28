@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { entriesApi } from "../api/entries";
 import { useEntryStore } from "../store/entryStore";
 import RichEditor from "../components/Editor";
+import AchievementToast from "../components/AchievementToast";
 import { ArrowLeftIcon, LoaderIcon, XIcon } from "../components/icons";
 
 const MOODS = [
@@ -33,6 +34,7 @@ export default function EditorPage() {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(!!id);
   const [error, setError] = useState("");
+  const [newAchievements, setNewAchievements] = useState([]);
 
   // If editing, fetch the existing entry
   useEffect(() => {
@@ -94,6 +96,13 @@ export default function EditorPage() {
       } else {
         const data = await entriesApi.create(payload);
         addEntry(data.entry);
+        // Show achievement toast if any new achievements
+        if (data.newAchievements && data.newAchievements.length > 0) {
+          setNewAchievements(data.newAchievements);
+          // Delay navigation so user can see the toast
+          setTimeout(() => navigate("/"), 3500);
+          return;
+        }
       }
 
       navigate(id ? `/entry/${id}` : "/");
@@ -114,6 +123,14 @@ export default function EditorPage() {
 
   return (
     <div className="fade-in editor-shell">
+      {/* Achievement toast */}
+      {newAchievements.length > 0 && (
+        <AchievementToast
+          achievements={newAchievements}
+          onClose={() => setNewAchievements([])}
+        />
+      )}
+
       {/* Top bar */}
       <div className="editor-topbar">
         <button className="btn-secondary" onClick={() => navigate(-1)}>

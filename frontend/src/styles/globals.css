@@ -44,6 +44,13 @@ a { text-decoration: none; color: inherit; }
   --radius-xl: 24px;
 
   --sidebar-width: 240px;
+
+  /* Heatmap colors (light theme) — purple to match accent */
+  --heatmap-empty: #ebedf0;
+  --heatmap-l1: #e0d4fc;
+  --heatmap-l2: #b99ff5;
+  --heatmap-l3: #9b7ef0;
+  --heatmap-l4: #7c5cdb;
 }
 
 [data-theme="dark"] {
@@ -70,6 +77,13 @@ a { text-decoration: none; color: inherit; }
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+
+  /* Heatmap colors (dark theme) — purple to match accent */
+  --heatmap-empty: #1e1e1e;
+  --heatmap-l1: #231a3a;
+  --heatmap-l2: #3d2a6e;
+  --heatmap-l3: #7c5cdb;
+  --heatmap-l4: #ad94f5;
 }
 
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
@@ -122,6 +136,19 @@ a { text-decoration: none; color: inherit; }
   pointer-events: none;
   height: 0;
   font-family: var(--font-serif);
+}
+
+/* TipTap images */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 0.8em 0;
+  cursor: default;
+}
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ── Animations ───────────────────────────────────────────────────────────── */

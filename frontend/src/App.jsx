@@ -10,6 +10,8 @@ import EditorPage from "./pages/EditorPage";
 import DetailPage from "./pages/DetailPage";
 import CalendarPage from "./pages/CalendarPage";
 import StatsPage from "./pages/StatsPage";
+import AchievementsPage from "./pages/AchievementsPage";
+import TimelinePage from "./pages/TimelinePage";
 
 function PrivateRoute({ children }) {
   const { token } = useAuthStore();
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="entry/:id" element={<DetailPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="stats" element={<StatsPage />} />
+          <Route path="achievements" element={<AchievementsPage />} />
+          <Route path="timeline" element={<TimelinePage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

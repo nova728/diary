@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useEntryStore } from "../store/entryStore";
 import { useEntries } from "../hooks/useEntries";
 import EntryCard from "../components/EntryCard";
+import MemoryCards from "../components/MemoryCards";
+import WritingGoalWidget from "../components/WritingGoalWidget";
 import { PlusIcon, SearchIcon, FilterIcon, LoaderIcon } from "../components/icons";
 import Select from "../components/Select";
 
@@ -136,6 +138,12 @@ export default function HomePage() {
       </div>
 
       {/* Content */}
+      {/* Memory Cards — on this day + random */}
+      <MemoryCards />
+
+      {/* Writing Goal Progress */}
+      <WritingGoalWidget />
+
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center", padding: "60px 0", color: "var(--text-muted)" }}>
           <LoaderIcon size={24} color="var(--accent)" />

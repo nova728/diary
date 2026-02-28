@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const { Entry, Tag, sequelize } = require("../models");
 const { paginate } = require("../utils/pagination");
+const { checkAchievements } = require("./achievementController");
 
 // Strip HTML tags to get plain text
 const stripHtml = (html) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -121,7 +122,10 @@ exports.create = async (req, res, next) => {
       include: [{ model: Tag, as: "tags", attributes: ["id", "name"], through: { attributes: [] } }],
     });
 
-    res.status(201).json({ entry: result });
+    // Check achievements asynchronously (don't block response)
+    const newAchievements = await checkAchievements(req.user.id);
+
+    res.status(201).json({ entry: result, newAchievements });
   } catch (err) {
     await t.rollback();
     next(err);
